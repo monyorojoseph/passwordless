@@ -4,6 +4,7 @@ cbor2==5.4.3
 cffi==1.15.1
 cryptography==37.0.4
 Django==4.1
+django-cors-headers==3.13.0
 djangorestframework==3.13.1
 psycopg2-binary==2.9.3
 pycparser==2.21
