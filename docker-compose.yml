@@ -17,12 +17,8 @@ services:
     image: postgres:13.8
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    # env_file:
-    #   - ./.env.dev.db
-    environment:
-      - POSTGRES_PASSWORD=biometric
-      - POSTGRES_DB=biometric_dev
-      - POSTGRES_USER=biometric
+    env_file:
+      - ./.env.dev.db
 
       
 volumes:
