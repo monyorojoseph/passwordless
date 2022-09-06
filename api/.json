@@ -1,8 +1,0 @@
-{
-    "rp": {"name": "Example Co", "id": "http://localhost:8000/"}, 
-    "user": {"id": "Ng", "name": "josph", "displayName": "josph"}, 
-    "challenge": "7XeliSMdoKdIdKypzyOsIyCa4l0niMCBvmf3z6WK5bvafKIeLMJNnMxxyX22kOdI54DkqeomV6LB86tRb_c5og", 
-    "pubKeyCredParams": [{"type": "public-key", "alg": -36}], 
-    "timeout": 60000, "excludeCredentials": [], 
-    "authenticatorSelection": {"authenticatorAttachment": "platform", "residentKey": "required", "requireResidentKey": true, "userVerification": "preferred"}, 
-    "attestation": "direct"}

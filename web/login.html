@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="./index.css">
+        <script src="https://unpkg.com/@simplewebauthn/browser/dist/bundle/index.umd.min.js"></script>
+    </head>
+    <body>
+        <main>
+            <nav></nav>
+            <section>
+                <div>
+                    <form id="form">
+                        <div>
+                            <label>Email*</label>
+                            <input type="email" name="email" required placeholder="type email address">
+                        </div>
+
+                        <div>
+                            <p id="succes"></p>
+                            <p id="error"></p>
+                        </div>
+                    </form>
+
+                    <div>
+                        <button type="button" id="button">Login</button>
+                    </div>
+
+                    <hr />
+                    <div>
+                        <a href="./index.html" target="_blank">
+                            <button>Register</button>
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <!-- <script src="" async defer></script> -->
+        <script src="https://unpkg.com/@simplewebauthn/browser/dist/bundle/index.umd.min.js"></script>
+        <script>
+            import { startAuthentication, browserSupportsWebauthn } from '@simplewebauthn/browser';
+
+            const form  = document.getElementById('form');
+            const succes = document.getElementById('succes');
+            const error = document.getElementById('error');
+            const button  = document.getElementById('button');
+
+            button.addEventListener('click', async()=> {
+                succes.innerText = '';
+                error.innerText = '';
+
+                form_data = new FormData(form);
+                data = {email: form_data.get('email')};
+
+                if (browserSupportsWebauthn){
+                    const response = await fetch('http://localhost:8000/user/authentication', {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data),
+                    })
+
+                    let asseResp;
+                    try{
+                        asseResp = await startAuthentication(await response.json());
+                    } catch(error){
+                        error.innerText = error;
+                        throw error;
+                    }
+
+                    // POST the response to the endpoint that calls
+                    // @simplewebauthn/server -> verifyAuthenticationResponse()
+                    const verificationResp = await fetch('http://localhost:8000/user/verify-authentication', {
+                    method: 'POST',
+                    mode:'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(asseResp),
+                    });
+
+                    // Wait for the results of verification
+                    const verificationJSON = await verificationResp.json();
+
+                    // Show UI appropriate for the `verified` status
+                    if (verificationJSON && verificationJSON.verified) {
+                    elemSuccess.innerHTML = 'Success!';
+                    } else {
+                    elemError.innerHTML = `Oh no, something went wrong! Response: <pre>${JSON.stringify(
+                        verificationJSON,
+                    )}</pre>`;
+                    }
+
+                } else{
+                    error.innerHTML = "Browser doesn't support web authenticator";
+                    return;
+                }
+
+            })
+            
+        </script>
+    </body>
+</html>
