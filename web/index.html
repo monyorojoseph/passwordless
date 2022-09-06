@@ -1,118 +1,39 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="./index.css">
-        <script src="https://unpkg.com/@simplewebauthn/browser/dist/bundle/index.umd.min.js"></script>
-    </head>
-    <body> 
-        <main>
-            <nav></nav>
-            <section>
-                <div>
-                    <form id="form">
-                        <div>
-                            <label>Email*</label>
-                            <input type="email" name="email" required placeholder="type email address">
-                        </div>
-                        <div>
-                            <label>Username*</label>
-                            <input type="text" name="username" required placeholder="your username">
-                        </div>
-                        <div>
-                            <p id="succes"></p>
-                            <p id="error"></p>
-                        </div>
-                    </form>
-                    <div>
-                        <button type="button" id="button">Register</button>
-                    </div>
-                    <hr />
-                    <div>
-                        <a href="./login.html" target="_blank">
-                            <button>Login</button>
-                        </a>
-                    </div>
-                </div>
-            </section>
-        </main>       
-        <!-- <script src="" async defer></script> -->
-        <script src="https://unpkg.com/@simplewebauthn/browser/dist/bundle/index.umd.min.js"></script>
-        <script>
-            import { startRegistration, browserSupportsWebauthn } from '@simplewebauthn/browser';
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Passwordless</title>
+  </head>
+  <body>
+    <main>
+      <section>
+        <div>
+          <div>
+            <form id="form">
+              <div>
+                <label>Email</label>
+                <input type="email" name="email" id="email" placeholder="your email address">
+              </div>
 
-            const form  = document.getElementById('form');
-            const succes = document.getElementById('succes');
-            const error = document.getElementById('error');
-            const button  = document.getElementById('button');
+              <div>
+                <label>Username</label>
+                <input type="text" name="username" id="username" placeholder="your username">
+              </div>
 
-
-            button.addEventListener('click', async()=> {
-
-                error.innerText = '';
-                succes.innerText =  '';
-
-                form_data = new FormData(form);
-                data = {email:form_data.get('email'), username:form_data.get('username')};
-                console.log(data)
-
-                if(browserSupportsWebauthn){
-                    const response = await fetch('http://localhost:8000/user/registration', {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data),
-                    })
-
-
-                    let attResp;
-                    try {
-                    // Pass the options to the authenticator and wait for a response
-                    attResp = await startRegistration(await response.json());
-                    } catch (error) {
-                    // Some basic error handling
-                    if (error.name === 'InvalidStateError') {
-                        elemError.innerText = 'Error: Authenticator was probably already registered by user';
-                    } else {
-                        elemError.innerText = error;
-                    }
-
-                    throw error;
-                    }
-
-                    // POST the response to the endpoint that calls
-                    // @simplewebauthn/server -> verifyRegistrationResponse()
-                    const verificationResp = await fetch('http://localhost:8000/user/verify-registration', {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(attResp),
-                    });
-
-                    // Wait for the results of verification
-                    const verificationJSON = await verificationResp.json();
-
-                    // Show UI appropriate for the `verified` status
-                    if (verificationJSON && verificationJSON.verified) {
-                    elemSuccess.innerHTML = 'Success!';
-                    } else {
-                    elemError.innerHTML = `Oh no, something went wrong! Response: <pre>${JSON.stringify(
-                        verificationJSON,
-                    )}</pre>`;
-                    }
-                } else{
-                    error.innerText = "Browser Doesn't support web authenticator"
-                    return;
-                }
-            });
-        </script>
-    </body>
+              <div>
+                <p id="succes"></p>
+                <p id="error"></p>
+              </div>
+            </form>
+            <div>
+              <button id="button">Register</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="/main.js"></script>
+  </body>
 </html>

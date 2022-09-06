@@ -22,8 +22,8 @@ from .serializers import UserSerializer
 
 User = get_user_model()
 
-RP_ID = "http://localhost:8000/"
-RP_NAME = "Example Co"
+RP_ID = "monyorojoseph.herokuapp.com"
+RP_NAME = "MJ co"
 
 # Create your views here.
 """
@@ -36,7 +36,8 @@ class UserAPI(viewsets.ModelViewSet):
     # registration options
     @action(detail=True, methods=['POST'])
     def registration(self, request, format=None):
-        data = json.loads(request.body)
+        # data = json.loads(request.body)
+        data = request.data
         user = User(email=data['email'], username=data['username'])
         user.save()
         options = generate_registration_options(
