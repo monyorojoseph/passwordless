@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Passwordless</title>
+  </head>
+  <body>
+    <main>
+      <section>
+        <div>
+          <div>
+            <form id="form">
+              <div>
+                <label>Email</label>
+                <input type="email" name="email" id="email" placeholder="your email address">
+              </div>
+
+              <div>
+                <label>Username</label>
+                <input type="text" name="username" id="username" placeholder="your username">
+              </div>
+
+              <div>
+                <p id="succes"></p>
+                <p id="error"></p>
+              </div>
+            </form>
+            <div>
+              <button id="button">Register</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>

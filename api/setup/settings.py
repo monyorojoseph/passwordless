@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 from decouple import config
 import ast
+import dj_database_url
+import django_heroku
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -40,11 +43,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-     "corsheaders",
+    "corsheaders",
+
+    'user',
 ]
+
+USER_AUTH_MODEL = 'user.CustomUser'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
@@ -77,17 +85,20 @@ WSGI_APPLICATION = 'setup.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': config('SQL_ENGINE'),
-        'NAME': config('SQL_DB'),
-        'USER': config('SQL_USER'),
-        'PASSWORD': config('SQL_PASS'),
-        'PORT': config('SQL_PORT'),
-        'HOST': config('SQL_HOST')
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': config('SQL_ENGINE'),
+            'NAME': config('SQL_DB'),
+            'USER': config('SQL_USER'),
+            'PASSWORD': config('SQL_PASS'),
+            'PORT': config('SQL_PORT'),
+            'HOST': config('SQL_HOST')
+        }
     }
-}
+else:
+    DATABASES = {'default': dj_database_url.config(conn_max_age=600)}
+    DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 
 
 # Password validation
@@ -114,7 +125,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Africa/Nairobi'
 
 USE_I18N = True
 
@@ -124,11 +135,19 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
 CORS_ALLOW_ALL_ORIGINS = True
+
+# auto import env variable
+django_heroku.settings(locals())
