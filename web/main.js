@@ -5,19 +5,21 @@ let DOMAIN = 'https://passwordless-authentincation.herokuapp.com'
 
 // get element ids
 const button = document.getElementById('button')
-const succes = document.getElementById('succes')
-const error = document.getElementById('error')
+const feedback = document.getElementById('feedback')
 const form = document.getElementById('form')
 
 button.addEventListener('click', async()=> {
-  error.innerText =  '';
-  succes.innerText = '';
-
+  button.disabled = true;
+  button.stye.backgroundColor = 'blue'
+  feedback.innerHTML = '';
+  let succes = document.createElement("p");
+  succes.style.color = 'green';
+  let error = document.createElement("p");
+  error.style.color = 'red';
+  
   const form_data = new FormData(form);
   const data = {email: form_data.get('email'), username:form_data.get('username')};
   if (browserSupportsWebAuthn){
-    console.log("hey Vite js")
-    console.log(`${import.meta.env.MODE}`)
     const config = {
       headers:{
         'Content-Type': 'application/json',
@@ -29,24 +31,27 @@ button.addEventListener('click', async()=> {
     .then(res=>res.data)
     .then(async(data)=> {
       try{
-        console.log('We made')
+        succes.innerText = 'Account Created, now finish verification.';
+        feedback.append(succes);
         attResp = await startRegistration(data);
-        console.log('It')
-        console.log(attResp)
+        console.log(attResp);
       } catch(error){
             // Some basic error handling
             console.log(error)
             if (error.name === 'InvalidStateError') {
               error.innerText = 'Error: Authenticator was probably already registered by user';
+              feedback.append(error);      
             } else {
               error.innerText = error;
+              feedback.append(error);      
             }
-      
             throw error;
       }
     })
     .catch(error => {
       console.log(error)
+      error.innerText = error
+      feedback.append(error);      
     })
         
     // POST the response to the endpoint that calls
@@ -57,21 +62,25 @@ button.addEventListener('click', async()=> {
       console.log(data)
       // Show UI appropriate for the `verified` status
       if (data && data.verified) {
-        elemSuccess.innerHTML = 'Success!';
+        succes.innerText = 'Success!';
+        feedback.append(succes)
       } else {
-        elemError.innerHTML = `Oh no, something went wrong! Response: <pre>${JSON.stringify(
+        error.innerText = `Oh no, something went wrong! Response: <pre>${JSON.stringify(
           data,
         )}</pre>`;
+        feedback.append(error)
       }
 
     })
     .catch(error => {
-      console.log(error)
+      error.innerText = error
+      feedback.append(error)
     });
 
   } else {
     console.log("Nope")
     error.innerText = "Browser doesn't support web authentication"
+    feedback.append(error);      
     return;
   }
 });
