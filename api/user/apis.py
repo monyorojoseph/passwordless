@@ -46,18 +46,27 @@ class UserAPI(viewsets.ModelViewSet):
         data = request.data
         user = User(email=data['email'], username=data['username'])
         user.save()
+        
+        """ Simple """
         options = generate_registration_options(
             rp_id=RP_ID,
             rp_name=RP_NAME,
             user_id=str(user.id),
             user_name=user.username,
-            attestation=AttestationConveyancePreference.DIRECT,
-            authenticator_selection=AuthenticatorSelectionCriteria(
-                authenticator_attachment=AuthenticatorAttachment.PLATFORM,
-                resident_key=ResidentKeyRequirement.REQUIRED,
-            ),
-            supported_pub_key_algs=[COSEAlgorithmIdentifier.RSASSA_PSS_SHA_256],
         )
+        """ Complex """
+        # options = generate_registration_options(
+        #     rp_id=RP_ID,
+        #     rp_name=RP_NAME,
+        #     user_id=str(user.id),
+        #     user_name=user.username,
+        #     attestation=AttestationConveyancePreference.DIRECT,
+        #     authenticator_selection=AuthenticatorSelectionCriteria(
+        #         authenticator_attachment=AuthenticatorAttachment.PLATFORM,
+        #         resident_key=ResidentKeyRequirement.REQUIRED,
+        #     ),
+        #     supported_pub_key_algs=[COSEAlgorithmIdentifier.RSASSA_PSS_SHA_256],
+        # )
         data = json.loads(options_to_json(options))
         return Response(data, status=status.HTTP_201_CREATED)
     
