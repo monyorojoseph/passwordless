@@ -25,9 +25,9 @@ from .serializers import UserSerializer
 
 User = get_user_model()
 
-RP_ID = "passwordless-authentincation.herokuapp.com"
+RP_ID = "passwordless.netlify.app"
 RP_NAME = "Passwordless authentication"
-ORGIN = "https://passwordless-authentincation.herokuapp.com"
+ORGIN = "https://passwordless.netlify.app"
 
 
 # Create your views here.
