@@ -25,9 +25,9 @@ from .serializers import UserSerializer
 
 User = get_user_model()
 
-RP_ID = "monyorojoseph.herokuapp.com"
-RP_NAME = "Webauthn Webauthn"
-ORGIN = "http://monyorojoseph.herokuapp.com"
+RP_ID = "passwordless-authentincation.herokuapp.com"
+RP_NAME = "Passwordless authentication"
+ORGIN = "https://passwordless-authentincation.herokuapp.com"
 
 
 # Create your views here.
@@ -59,7 +59,6 @@ class UserAPI(viewsets.ModelViewSet):
             supported_pub_key_algs=[COSEAlgorithmIdentifier.ECDSA_SHA_512],
         )
         data = json.loads(options_to_json(options))
-        print(data)
         return Response(data, status=status.HTTP_201_CREATED)
     
     # verify registration response
