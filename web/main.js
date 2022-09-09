@@ -10,7 +10,7 @@ const form = document.getElementById('form')
 
 button.addEventListener('click', async()=> {
   button.disabled = true;
-  button.stye.backgroundColor = 'blue'
+  // button.stye.backgroundColor = 'blue'
   feedback.innerHTML = '';
   let succes = document.createElement("p");
   succes.style.color = 'green';
