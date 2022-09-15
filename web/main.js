@@ -29,9 +29,10 @@ button.addEventListener('click', async()=> {
     .then(async(data)=> {
       try{
         // succes.innerText = 'Account Created, now finish verification.';
-        attResp = await startRegistration(data);
+        const attResp = await startRegistration(data);
         succes.innerText = JSON.stringify(attResp);
         feedback.append(succes);
+
         // POST the response to the endpoint that calls
         // @simplewebauthn/server -> verifyRegistrationResponse()
         axios.post(`${DOMAIN}/user/verify-registration`, attResp, config).
@@ -47,7 +48,6 @@ button.addEventListener('click', async()=> {
             )}</pre>`;
             feedback.append(error)
           }
-
         })
         .catch(error => {
           error.innerText = error
