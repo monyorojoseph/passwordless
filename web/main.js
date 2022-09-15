@@ -23,33 +23,36 @@ button.addEventListener('click', async()=> {
       headers:{
         'Content-Type': 'application/json',
       }}
-
-    try{    
-      const { data } = await axios.post(`${DOMAIN}/user/registration`, data, config);
+    
+    axios.post(`${DOMAIN}/user/registration`, data, config)
+    .then(res=>res.data)
+    .then(async(data)=> {
       try{
         // succes.innerText = 'Account Created, now finish verification.';
-        const attResp = await startRegistration(data);
+        attResp = await startRegistration(data);
         succes.innerText = JSON.stringify(attResp);
-        feedback.append(succes);      
-        try{
-            // POST the response to the endpoint that calls
-            // @simplewebauthn/server -> verifyRegistrationResponse()
-            const { data:ver_data } = await axios.post(`${DOMAIN}/user/verify-registration`, attResp, config);
-            
-            // Show UI appropriate for the `verified` status
-            if (ver_data && ver_data.verified) {
-              succes.innerText = JSON.stringify(ver_data);
-              feedback.append(succes)
-            } else {
-              error.innerText = `Oh no, something went wrong! Response: <pre>${JSON.stringify(
-                ver_data,
-              )}</pre>`;
-              feedback.append(error)
-            }
-        } catch(error){
-          error.innerText = error;
-          feedback.append(error); 
-        }
+        feedback.append(succes);
+        // POST the response to the endpoint that calls
+        // @simplewebauthn/server -> verifyRegistrationResponse()
+        axios.post(`${DOMAIN}/user/verify-registration`, attResp, config).
+        then(res => res.data)
+        .then(async(data)=> {
+          // Show UI appropriate for the `verified` status
+          if (data && data.verified) {
+            succes.innerText = JSON.stringify(data);
+            feedback.append(succes)
+          } else {
+            error.innerText = `Oh no, something went wrong! Response: <pre>${JSON.stringify(
+              data,
+            )}</pre>`;
+            feedback.append(error)
+          }
+
+        })
+        .catch(error => {
+          error.innerText = error
+          feedback.append(error)
+        });
       } catch(error){
             // Some basic error handling
             console.log(error)
@@ -62,11 +65,13 @@ button.addEventListener('click', async()=> {
             }
             throw error;
       }
-    } catch(error){
-      error.innerText = error;
-      feedback.append(error);
-    }
-    
+    })
+    .catch(error => {
+      console.log(error)
+      error.innerText = error
+      feedback.append(error);      
+    })
+
   } else {
     console.log("Nope")
     error.innerText = "Browser doesn't support web authentication"
