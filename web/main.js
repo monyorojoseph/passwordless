@@ -23,47 +23,48 @@ button.addEventListener('click', async()=> {
       headers:{
         'Content-Type': 'application/json',
       }}
-    
-    const { data } = await axios.post(`${DOMAIN}/user/registration`, data, config);
 
-    let attResp;
-
-    try{
-      // succes.innerText = 'Account Created, now finish verification.';
-      attResp = await startRegistration(data);
-      succes.innerText = JSON.stringify(attResp);
-      feedback.append(succes);      
+    try{    
+      const { data } = await axios.post(`${DOMAIN}/user/registration`, data, config);
       try{
-          // POST the response to the endpoint that calls
-          // @simplewebauthn/server -> verifyRegistrationResponse()
-          const { data:ver_data } = await axios.post(`${DOMAIN}/user/verify-registration`, attResp, config);
-          
-          // Show UI appropriate for the `verified` status
-          if (ver_data && ver_data.verified) {
-            succes.innerText = JSON.stringify(ver_data);
-            feedback.append(succes)
-          } else {
-            error.innerText = `Oh no, something went wrong! Response: <pre>${JSON.stringify(
-              ver_data,
-            )}</pre>`;
-            feedback.append(error)
-          }
-
+        // succes.innerText = 'Account Created, now finish verification.';
+        const attResp = await startRegistration(data);
+        succes.innerText = JSON.stringify(attResp);
+        feedback.append(succes);      
+        try{
+            // POST the response to the endpoint that calls
+            // @simplewebauthn/server -> verifyRegistrationResponse()
+            const { data:ver_data } = await axios.post(`${DOMAIN}/user/verify-registration`, attResp, config);
+            
+            // Show UI appropriate for the `verified` status
+            if (ver_data && ver_data.verified) {
+              succes.innerText = JSON.stringify(ver_data);
+              feedback.append(succes)
+            } else {
+              error.innerText = `Oh no, something went wrong! Response: <pre>${JSON.stringify(
+                ver_data,
+              )}</pre>`;
+              feedback.append(error)
+            }
+        } catch(error){
+          error.innerText = error;
+          feedback.append(error); 
+        }
       } catch(error){
-        error.innerText = error;
-        feedback.append(error); 
+            // Some basic error handling
+            console.log(error)
+            if (error.name === 'InvalidStateError') {
+              error.innerText = 'Error: Authenticator was probably already registered by user';
+              feedback.append(error);      
+            } else {
+              error.innerText = error;
+              feedback.append(error);      
+            }
+            throw error;
       }
     } catch(error){
-          // Some basic error handling
-          console.log(error)
-          if (error.name === 'InvalidStateError') {
-            error.innerText = 'Error: Authenticator was probably already registered by user';
-            feedback.append(error);      
-          } else {
-            error.innerText = error;
-            feedback.append(error);      
-          }
-          throw error;
+      error.innerText = error;
+      feedback.append(error);
     }
     
   } else {
