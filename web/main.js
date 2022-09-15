@@ -35,7 +35,7 @@ button.addEventListener('click', async()=> {
 
         // POST the response to the endpoint that calls
         // @simplewebauthn/server -> verifyRegistrationResponse()
-        axios.post(`${DOMAIN}/user/verify-registration`, attResp, config).
+        axios.post(`${DOMAIN}/user/verify-registration`, JSON.stringify(attResp), config).
         then(res => res.data)
         .then(async(data)=> {
           // Show UI appropriate for the `verified` status

@@ -73,8 +73,6 @@ class UserAPI(viewsets.ModelViewSet):
     # verify registration response
     @action(detail=True, methods=['POST'])
     def registration_verification(self, request, format=None):
-        print("VERIFICATION CAME THROUGH")
-        print(request.data)
         registration_verification = verify_registration_response(
             credential=RegistrationCredential.parse_raw(request.data),
             expected_challenge=base64url_to_bytes(
