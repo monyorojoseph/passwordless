@@ -27,7 +27,7 @@ User = get_user_model()
 
 RP_ID = "passwordless.netlify.app"
 RP_NAME = "Passwordless authentication"
-ORGIN = "https://passwordless.netlify.app"
+ORIGIN = "https://passwordless.netlify.app"
 
 
 # Create your views here.
@@ -73,12 +73,14 @@ class UserAPI(viewsets.ModelViewSet):
     # verify registration response
     @action(detail=True, methods=['POST'])
     def registration_verification(self, request, format=None):
+        print("VERIFICATION CAME THROUGH")
+        print(request.data)
         registration_verification = verify_registration_response(
             credential=RegistrationCredential.parse_raw(request.data),
             expected_challenge=base64url_to_bytes(
                 "CeTWogmg0cchuiYuFrv8DXXdMZSIQRVZJOga_xayVVEcBj0Cw3y73yhD4FkGSe-RrP6hPJJAIm3LVien4hXELg"
             ),
-            expected_origin=ORGIN,
+            expected_origin=ORIGIN,
             expected_rp_id=RP_ID,
             require_user_verification=True,
         )
@@ -105,7 +107,7 @@ class UserAPI(viewsets.ModelViewSet):
                 "iPmAi1Pp1XL6oAgq3PWZtZPnZa1zFUDoGbaQ0_KvVG1lF2s3Rt_3o4uSzccy0tmcTIpTTT4BU1T-I4maavndjQ"
             ),
             expected_rp_id=RP_ID,
-            expected_origin=ORGIN,
+            expected_origin=ORIGIN,
             credential_public_key=base64url_to_bytes(
                 "pAEDAzkBACBZAQDfV20epzvQP-HtcdDpX-cGzdOxy73WQEvsU7Dnr9UWJophEfpngouvgnRLXaEUn_d8HGkp_HIx8rrpkx4BVs6X_B6ZjhLlezjIdJbLbVeb92BaEsmNn1HW2N9Xj2QM8cH-yx28_vCjf82ahQ9gyAr552Bn96G22n8jqFRQKdVpO-f-bvpvaP3IQ9F5LCX7CUaxptgbog1SFO6FI6ob5SlVVB00lVXsaYg8cIDZxCkkENkGiFPgwEaZ7995SCbiyCpUJbMqToLMgojPkAhWeyktu7TlK6UBWdJMHc3FPAIs0lH_2_2hKS-mGI1uZAFVAfW1X-mzKL0czUm2P1UlUox7IUMBAAE"
             ),

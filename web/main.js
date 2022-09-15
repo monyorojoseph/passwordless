@@ -10,7 +10,6 @@ const form = document.getElementById('form')
 
 button.addEventListener('click', async()=> {
   button.disabled = true;
-  // button.stye.backgroundColor = 'blue'
   feedback.innerHTML = '';
   let succes = document.createElement("p");
   succes.style.color = 'green';
@@ -31,10 +30,10 @@ button.addEventListener('click', async()=> {
     .then(res=>res.data)
     .then(async(data)=> {
       try{
-        succes.innerText = 'Account Created, now finish verification.';
-        feedback.append(succes);
+        // succes.innerText = 'Account Created, now finish verification.';
         attResp = await startRegistration(data);
-        console.log(attResp);
+        succes.innerText = JSON.stringify(attResp);
+        feedback.append(succes);
       } catch(error){
             // Some basic error handling
             console.log(error)
@@ -62,7 +61,7 @@ button.addEventListener('click', async()=> {
       console.log(data)
       // Show UI appropriate for the `verified` status
       if (data && data.verified) {
-        succes.innerText = 'Success!';
+        succes.innerText = JSON.stringify(data);
         feedback.append(succes)
       } else {
         error.innerText = `Oh no, something went wrong! Response: <pre>${JSON.stringify(
